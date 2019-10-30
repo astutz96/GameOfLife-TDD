@@ -10,6 +10,9 @@ namespace GameOfLife.Library
     {
         public static CellState GetNewState(CellState currentState, int liveNeighbors)
         {
+            ValidateCellState(currentState);
+            ValidateLiveNeighborsCount(liveNeighbors);
+            
             switch (currentState)
             {
                 case CellState.Alive:
@@ -22,6 +25,18 @@ namespace GameOfLife.Library
                     break;
             }
             return currentState;
+        }
+
+        private static void ValidateCellState(CellState currentState)
+        {
+            if (!Enum.IsDefined(typeof(CellState), currentState))
+                throw new ArgumentOutOfRangeException(nameof(currentState));
+        }
+
+        private static void ValidateLiveNeighborsCount(int liveNeighbors)
+        {
+            if (liveNeighbors > 8 || liveNeighbors < 0)
+                throw new ArgumentOutOfRangeException(nameof(liveNeighbors));
         }
     }
 }

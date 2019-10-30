@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using GameOfLife.Library;
+using System;
 
 namespace Tests
 {
@@ -71,6 +72,52 @@ namespace Tests
             CellState newState = LifeRules.GetNewState(currentState, liveNeighbors);
 
             Assert.AreEqual(CellState.Dead, newState);
+
+        }
+
+        [Test]
+        public void LiveNeighbors_MoreThan8_ThrowArgumentOutOfRangeExpection()
+        {
+            var currentState = CellState.Alive;
+            var liveNeighbors = 9;
+            try
+            {
+                CellState newState = LifeRules.GetNewState(currentState, liveNeighbors);
+                Assert.Fail("No exception was thrown");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Assert.AreEqual("liveNeighbors", ex.ParamName);
+            }
+        }
+
+        [Test]
+        public void CellState_MoreThan2_ThrowArgumentOutOfRangeExpection()
+        {
+            var currentState = (CellState)2;
+            var liveNeighbors = 0;
+            try
+            {
+                CellState newState = LifeRules.GetNewState(currentState, liveNeighbors);
+                Assert.Fail("No Exception was thrown");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Assert.AreEqual("currentState", ex.ParamName); 
+            }
+        }
+
+        [Test]
+        public void LiveNeighbors_LessThan0_ThrowArgumentOutOfRangeException()
+        {
+            var currentState = CellState.Alive;
+            var liveNeighbors = -1;
+
+            Assert.Throws(
+                   Is.TypeOf<ArgumentOutOfRangeException>()
+                   .And.Property("ParamName")
+                   .EqualTo("liveNeighbors"), 
+                   () => LifeRules.GetNewState(currentState, liveNeighbors));
 
         }
     }
